@@ -1,0 +1,18 @@
+# Compiled python modules
+__pycache__/
+*.py[cod]
+
+# Executables and large binaries
+*.exe
+*.rar
+*.zip
+
+# Logs and outputs
+*.out
+error.out
+
+# Build and IDE directories
+build/
+dist/
+.idea/
+Temp files/
