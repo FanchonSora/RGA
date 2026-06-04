@@ -60,8 +60,8 @@ The app will prompt you for:
 Example interactive input:
 
 ```text
-Please enter the name of the executor: Lam
-Input the SMILES of the species: CC
+Please enter the name of the executor: ... (ex: ;am)
+Input the SMILES of the species: ... (ex: CC)
 ```
 
 You can also automate the input with a temporary file:
@@ -84,7 +84,15 @@ Edit `config.yaml` to control:
 - similarity and analysis toggles
 
 ## Expected Output
-The result file named in `res_file` (for example `lam_CBSQB3.out`) will contain:
+The result file is saved under `output/` and is named using the executor and species name in this format:
+
+`<executor>_<species>_CBSQB3.out`
+
+For example, if the executor is `Lam` and the species is `CC`, the generated output file will be:
+
+`output/Lam_CC_CBSQB3.out`
+
+The result file will contain:
 - header block with executor and species
 - constraint dump
 - summary statistics

@@ -1,3 +1,5 @@
+import re
+
 from utility_module import time, is_number, Chem, os, freeze_support, printHeader, printExecutionDetails
 # from utility_module import *
 from rxngenconfig import Config
@@ -8,6 +10,21 @@ from rxngenerator_stochastic_parallel import generate_rxns_stochastic
 # from similarity_module import checkSimilarity
 from similarity_parallel import checkSimilarity
 from analysis_module import analyzeReactions
+
+
+def sanitize_output_filename(name):
+    return re.sub(r'[^A-Za-z0-9]+', '_', name).strip('_') or 'output'
+
+def format_output_file_name(res_file, executor_name, species_name):
+    output_dir = os.path.join(os.getcwd(), "output")
+    os.makedirs(output_dir, exist_ok=True)
+
+    safe_executor = sanitize_output_filename(executor_name)
+    safe_species = sanitize_output_filename(species_name)
+    suffix = "_CBSQB3.out"
+
+    output_name = f"{safe_executor}_{safe_species}{suffix}"
+    return os.path.join(output_dir, output_name)
 
 def main():
     print("\n*** ------------------------------------ ***")
@@ -70,7 +87,7 @@ def main():
             # expt = float(toks[1].replace("\"", ""))
             # calc = float(toks[2].replace("\"", ""))
             # uncert = float(toks[3].replace("\"", ""))
-            
+
             # s = toks[1]
             # expt = calc = uncert = float(toks[2])
 
@@ -108,6 +125,8 @@ def main():
     #     print("The standardized form of", s1, "is", s1_standard)
     #     print(s1_standard, "will be used instead to ensure the consistency\n")
     #     s1 = s1_standard
+
+    resFile = format_output_file_name(resFile, executor, s1_standard)
 
     if s1 not in species and s1_standard not in species:
         print("This species is not in the database")
