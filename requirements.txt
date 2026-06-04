@@ -1,8 +1,9 @@
-numpy>=1.24
-pandas>=2.0
-matplotlib>=3.7
-rdkit>=2024.3
-scikit-learn>=1.3
-sympy>=1.12
-PuLP>=2.7
-PyYAML>=6.0
+numpy
+pandas
+matplotlib
+rdkit
+scikit-learn
+sympy
+PuLP
+PyYAML
+
