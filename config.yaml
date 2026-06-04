@@ -1,18 +1,18 @@
 files:
-  species_file: CBSQB3_2019.10.25.txt #CBS-QB3_full.csv # Molecular database
-  res_file: lam_CBSQB3.out #res_test_2.out
-  executor: Lam # Name of who runs the code
-  species_smiles: "CC" # "CC1COC(O1)=O  C[C]1COC(O1)=O CC1[CH]OC(O1)=O [CH2]C1[CH]OC(O1)=O" # CC1COC(O1)=O SMILES wrapped by quotes, multiple species split by space/tab
-  calc_value: -20.05 -134.5 -90.2 -88.6 -83.1 # Calculated value (kcal/mol), no quote needed, same as smiles
+  species_file: data/CBSQB3_2019.10.25.txt # Molecular database
+  res_file: output/result.out
+  executor: Demo
+  species_smiles: "CC" # SMILES wrapped by quotes, multiple species split by space/tab
+  calc_value: -19.28 # Calculated value (kcal/mol)
   
 rxn_constraints:
-  no_of_cores: 6
+  no_of_cores: 4
   same_coef: true
   no_species: 4
   complete_set: false
   stochastic: true
-  no_trials: 10000
-  seed: 42 # Empty or integer value, used for reproducibility of the stochastic approach
+  no_trials: 1000
+  seed: 42
   
   # Atom constraints
   lone_electron: false
@@ -40,8 +40,8 @@ similarity:
   similarity_on: true
   radius: 4
   chirality: true
-  feature_method: HRCF # HRCF, ECFP, FCFP, BoB, CM, AP, TT
-  
+  feature_method: HRCF
+
 analysis:
   analysis_on: true
   filter: true
