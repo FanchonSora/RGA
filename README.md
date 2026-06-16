@@ -1,8 +1,8 @@
-# RGA Project - Source (`src`) Usage Guide
+# RGA Project Usage Guide
 
 ## Overview
-This repository contains a refactored version of the RGA reaction generator and analyzer in `src/`.
-The main executable script is `src/isodesmic.py`, which reads a YAML config file, loads species data, generates isodesmic reactions, computes similarity, and performs HoF analysis.
+This repository contains the RGA reaction generator and analyzer. The primary execution directory is `RAG_initial/RGA`.
+The main executable script is `isodesmic_multiple.py`, which reads a YAML config file (`config.yaml`), loads species data, generates isodesmic reactions, computes similarity, and performs HoF analysis.
 
 ## Requirements
 Install Python dependencies before running the project.
@@ -28,83 +28,43 @@ pip install -r requirements.txt
 > Note: `rdkit` often requires a special install method depending on your Python distribution.
 
 ## Project Layout
-- `src/` - main source code for the RGA application
-- `src/isodesmic.py` - CLI entry point
-- `src/config.yaml` - example configuration file for `src/isodesmic.py`
-- `src/CBSQB3_2019.10.25.txt` - example species database file used by the app
-- `src/lam_CBSQB3.out` - example output file from a previous run
-- `data/species/` - original data files for species and thermochemistry
-
-## Setup for Running `src`
-The `src/isodesmic.py` script looks for `config.yaml` in the current working directory when it runs.
-Therefore, run it from the repository root and make sure a `config.yaml` file exists there.
-
-If you do not already have `config.yaml` in the root, copy it from `src/`:
-
-```powershell
-copy .\src\config.yaml .\config.yaml
-copy .\data\species\CBSQB3_2019.10.25.txt .\CBSQB3_2019.10.25.txt
-```
+- `RAG_initial/RGA/` - Main directory containing the application code and data.
+- `RAG_initial/RGA/isodesmic_multiple.py` - Main CLI entry point for processing multiple reactions.
+- `RAG_initial/RGA/config.yaml` - Configuration file defining input data and execution parameters.
+- `RAG_initial/RGA/CBSQB3_2019.10.25.txt` - Species database file.
+- `src/` - A cleaner, refactored version of the source code (currently retained for reference/future use).
 
 ## How to Run
-From the repository root, execute:
 
+1. Open your terminal and change the directory to the working folder:
 ```powershell
-python src\isodesmic.py
+cd RAG_initial\RGA
 ```
 
-The app will prompt you for:
-1. executor name
-2. SMILES of the target species
-
-Example interactive input:
-
-```text
-Please enter the name of the executor: ... (ex: ;am)
-Input the SMILES of the species: ... (ex: CC)
+2. Open `config.yaml` in your editor and configure the necessary inputs. The script `isodesmic_multiple.py` reads these values directly so you don't have to enter them interactively. Example configuration:
+```yaml
+files:
+  species_file: CBSQB3_2019.10.25.txt
+  res_file: ...\RGA_repo\output\'...'.out
+  executor: Lam
+  species_smiles: "C1=CC=C2C=CC=CC2=C1"
+  calc_value: 38.7
 ```
 
-You can also automate the input with a temporary file:
-
+3. Execute the script:
 ```powershell
-Set-Content -Path input.txt -Value "Lam`nCC`n`
-"
-cmd /c "python src\isodesmic.py < input.txt"
+python isodesmic_multiple.py
 ```
-
-## Configuration
-Edit `config.yaml` to control:
-- species database file (`species_file`)
-- result file name (`res_file`)
-- executor name
-- target species smiles
-- stochastic / exhaustive generation mode
-- number of cores
-- reaction constraints
-- similarity and analysis toggles
 
 ## Expected Output
-The result file is saved under `output/` and is named using the executor and species name in this format:
-
-`<executor>_<species>_CBSQB3.out`
-
-For example, if the executor is `Lam` and the species is `CC`, the generated output file will be:
-
-`output/Lam_CC_CBSQB3.out`
+The script will output its progress in the terminal and write the results to the path specified by `res_file` in your `config.yaml`. The output filename will be prefixed with the target SMILES string (e.g., `C1=CC=C2C=CC=CC2=C1_lam_CBSQB3.out`).
 
 The result file will contain:
-- header block with executor and species
-- constraint dump
-- summary statistics
-- list of reactions with similarity, HoF, and uncertainty
-- execution details
+- Header block with executor and species details.
+- Constraint parameters used for generation.
+- List of reactions with similarity, HoF (Heat of Formation), and uncertainty.
+- Execution details and performance summary.
 
 ## Troubleshooting
-- If the script reports `config.yaml or config.json does not exist`, confirm you are running from the repo root and `config.yaml` exists there.
-- If the script cannot find the species file, copy the correct data file to the same folder or adjust `species_file` in `config.yaml`.
-- On Windows, `rdkit` install may require a conda channel or wheel; use your Python environment's recommended install method.
-
-## Notes
-- `src/isodesmic.py` is the main entry point for the refactored source tree.
-- The root repository now has a runnable `config.yaml` and species file to support direct execution.
-- This README is intended to help new contributors understand how to run and validate the `src` project.
+- If the script cannot find `config.yaml` or `CBSQB3_2019.10.25.txt`, make sure you have `cd` into the `RAG_initial\RGA` directory before executing the script.
+- On Windows, installing `rdkit` via `pip` can sometimes fail; if so, consider using `conda install -c conda-forge rdkit` or a pre-compiled wheel.

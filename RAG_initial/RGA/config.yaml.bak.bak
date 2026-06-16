@@ -1,0 +1,47 @@
+files:
+  species_file: CBSQB3_2019.10.25.txt #CBS-QB3_full.csv # Molecular database
+  res_file: lam_CBSQB3.out #res_test_2.out
+  executor: Triet # Name of who runs the code
+  species_smiles: [C]1=CC=CCC1 # SMILES
+  calc_value: 87.2315 # Calculated value (kcal/mol)
+  
+rxn_constraints:
+  no_of_cores: 8
+  same_coef: true
+  no_species: 6
+  complete_set: false
+  stochastic: true
+  no_trials: 100000
+  
+  # Atom constraints
+  lone_electron: true
+  electron_pair: true
+  electron_pair_type: true
+  atom_with_hydro: false
+  atom_hybridization: false
+  atom_hybrid_with_hydro: false
+  atom_degree: false
+  atom_type: C
+  radical: false
+  
+  # Bond constraints
+  bond_type:
+    hydro_bond: true
+    normal_bond: false
+    bond_hybridization: false
+    bond_with_hydro: false
+    bond_degree: false
+    bond_radical: false
+    bond_atom_type: C 
+    ring: false
+    
+similarity:
+  similarity_on: true
+  radius: 4
+  chirality: true
+  feature_method: HRCF # HRCF, ECFP, FCFP, BoB, CM, AP, TT
+  
+analysis:
+  analysis_on: true
+  filter: true
+  top: 0.1
