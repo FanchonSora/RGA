@@ -5,15 +5,10 @@ def analyzeReactions(fout, r1, reactions, inputCalcData, uncerts, expts, calcs, 
 
     topReactions = config.top
     # print reactions
-
     print("Start analyzing reactions...")
-
     sorted_reactions = sorted(reactions.items(), key=operator.itemgetter(1), reverse=True)
-
     # sims = [sorted_reactions[i][1] for i in range(len(sorted_reactions))]
-
     # topReactions = len(sorted_reactions)
-
     if topReactions == -1:
         topReactions = len(sorted_reactions)
     elif topReactions < 1.0:

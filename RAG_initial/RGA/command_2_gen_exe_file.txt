@@ -1,1 +1,0 @@
-py -2 -m PyInstaller -F isodesmic_multiple.py

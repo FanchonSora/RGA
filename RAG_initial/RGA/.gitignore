@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Executables
+*.exe
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Runtime/Output
+error.out
+*.out
+
+# Archives
+*.rar
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Backup files
+*.bak
+*.bak.bak

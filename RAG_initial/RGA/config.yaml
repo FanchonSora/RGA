@@ -2,8 +2,8 @@ files:
   species_file: CBSQB3_2019.10.25.txt # Molecular database
   res_file: C:\Users\THINKPAD P16S\.gemini\antigravity-ide\scratch\RGA_repo\output\lam_CBSQB3.out #res_test_2.out
   executor: Lam # Name of who runs the code
-  species_smiles: "C1=CC=C2C=CC=CC2=C1" # CC1COC(O1)=O SMILES wrapped by quotes, multiple species split by space/tab
-  calc_value: 38.7 # Calculated value (kcal/mol), no quote needed, same as smiles
+  species_smiles: "C1CC2=CC=CC=C2C1" # CC1COC(O1)=O SMILES wrapped by quotes, multiple species split by space/tab
+  calc_value: 17.3 # Calculated value (kcal/mol), no quote needed, same as smiles
   
 rxn_constraints:
   no_of_cores: 6
