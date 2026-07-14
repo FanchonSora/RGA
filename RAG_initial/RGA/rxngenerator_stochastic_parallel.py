@@ -5,208 +5,111 @@ from bond_finder import findBonds
 from rxn_writer import printResultDiffParallel, printResultSameParallel
 
 def parallel_same_stoch(curRKeys, curPKeys, curAtomList, bondR1, curBonds, rSize, pSize):
-# def parallel_same_stoch(rKeys, pKeys, atomBags, bondR1, bondList, rSize, pSize):
-
-    # rxns = []
-
     rxn = None
-
-    # sz = len(rKeys)
-    #
-    # for index in range(sz):
-    #
-    #     curRKeys, curPKeys, curAtomList, curBonds = rKeys[index], pKeys[index], atomBags[index], bondList[index]
-
     rList = {}
-
     for rIndex in range(rSize):
         rList = combine2Dicts(rList, curAtomList[rIndex])
-
     pList = {}
     for pIndex in range(pSize):
         pList = combine2Dicts(pList, curAtomList[pIndex + rSize])
-
     if compare2Dicts(rList, pList):
-
         rBonds = bondR1.copy()
-
         for rIndex in range(rSize - 1):
             rBonds = combine2Dicts(rBonds, curBonds[rIndex])
-
         pBonds = {}
-
         for pIndex in range(pSize):
             pBonds = combine2Dicts(pBonds, curBonds[pIndex + rSize - 1])
-
         if compare2Dicts(rBonds, pBonds):
             rxn = printResultSameParallel(reactants=curRKeys, products=curPKeys)
-            # rxns.append(printResultSameParallel(reactants=curRKeys, products=curPKeys))
-
     return rxn
 
 def generate_same_rxn(keys, m1, r1, mols, atomR1, atomList, bondR1, bonds, rSize, pSize, maxCnt, config):
-
     reactants, products, rKeys, pKeys, atomBags, bondList = generate_permutations(keys=keys, m1=m1, r1=r1, mols=mols,
                                                                          atomR1=atomR1, atomList=atomList,
                                                                          bonds=bonds, config=config, rSize=rSize, pSize=pSize,
                                                                                   maxCnt=maxCnt)
-
     rLen = len(reactants)
     rSize += 1
-
-    # print("Same len:", rLen)
-
-    # args = [[rKeys[index], pKeys[index], atomBags[index], bondR1, bondList[index], rSize, pSize] for index in range(rLen)]
-    #
-    # no_processors = adjustNoProcessors(config.noProcessors)
-    #
-    # mp = Pool(processes=no_processors)
-    #
-    # func = partial(divide_work, parallel_same_stoch)
-    #
-    # import time
-    # start = time.clock()
-    #
-    # rxnList = mp.imap_unordered(func, args, chunksize=1)
-    #
-    # mp.close()
-    # mp.join()
-    #
-    # print time.clock() - start, "s."
-    #
-    # rxnList = [rxn for rxn in rxnList if rxn]
-
     rxnList = []
-
     for index in range(rLen):
         curRKeys, curPKeys, curAtomList, curBonds = rKeys[index], pKeys[index], atomBags[index], bondList[index]
-
         rList = {}
-
         for rIndex in range(rSize):
             rList = combine2Dicts(rList, curAtomList[rIndex])
-
         pList = {}
         for pIndex in range(pSize):
             pList = combine2Dicts(pList, curAtomList[pIndex + rSize])
-
         if compare2Dicts(rList, pList):
-
             rBonds = bondR1.copy()
-
             for rIndex in range(rSize - 1):
                 rBonds = combine2Dicts(rBonds, curBonds[rIndex])
-
             pBonds = {}
-
             for pIndex in range(pSize):
                 pBonds = combine2Dicts(pBonds, curBonds[pIndex + rSize - 1])
-
             if compare2Dicts(rBonds, pBonds):
-                # rxn = printResultSameParallel(reactants=curRKeys, products=curPKeys)
                 rxnList.append(printResultSameParallel(reactants=curRKeys, products=curPKeys))
-
     return rxnList
 
 def parallel_diff_stoch(curReactants, curProducts, curRKeys, curPKeys, curAtomList, bondR1, curBonds, rSize, pSize):
-
     coefList = BalanceEq().balanceEq(reactants=curReactants, products=curProducts, atomList=curAtomList)
-
-    # print curRKeys, curPKeys
-
     rxns = []
-
     if coefList:
-
         for coefs in coefList:
-
             rBonds = multiplyCoef(bondR1, coefs[0])
             for rIndex in range(rSize - 1):
                 rBonds = combine2Dicts(rBonds, multiplyCoef(curBonds[rIndex], coefs[rIndex + 1]))
-
             pBonds = {}
             for pIndex in range(pSize):
                 pBonds = combine2Dicts(pBonds, multiplyCoef(curBonds[pIndex + rSize - 1], coefs[pIndex + rSize]))
-
             if compare2Dicts(rBonds, pBonds):
                 rxns.append(printResultDiffParallel(reactants=curRKeys, products=curPKeys, coefs=coefs))
-
     return rxns
 
 def generate_diff_rxn(keys, m1, r1, mols, atomR1, atomList, bondR1, bonds, rSize, pSize, maxCnt, config):
-
     reactants, products, rKeys, pKeys, atomBags, bondList = generate_permutations(keys=keys, m1=m1, r1=r1, mols=mols,
                                                                          atomR1=atomR1, atomList=atomList,
                                                                          bonds=bonds, config=config, rSize=rSize, pSize=pSize,
                                                                                   maxCnt=maxCnt)
-
     rLen = len(reactants)
     rSize += 1
-
-    # print("Diff len:", rLen)
-
     if config.noSpecies > 4 or config.noTrials > 1000:
-
         args = [[reactants[index], products[index], rKeys[index], pKeys[index], atomBags[index], bondR1, bondList[index], rSize, pSize]
                 for index in range(rLen)]
-
         no_processors = adjustNoProcessors(config.noProcessors)
-
         mp = Pool(processes=no_processors)
-
         func = partial(divide_work, parallel_diff_stoch)
-
         chunkSz = rLen // no_processors
-
         tmpList = mp.imap_unordered(func, args, chunksize=chunkSz)
-
         mp.close()
         mp.join()
-
         rxnList = []
-
         for rxns in tmpList:
             if rxns and len(rxns) > 0:
                 rxnList += rxns
-
     else:
-
         rxnList = []
-
         for index in range(rLen):
             curReactants, curProducts, curRKeys, curPKeys, curAtomList, curBonds = reactants[index], products[index], rKeys[index], pKeys[index],\
                                                                                    atomBags[index], bondList[index]
-
             coefList = BalanceEq().balanceEq(reactants=curReactants, products=curProducts, atomList=curAtomList)
-
-            # rxn = None
-
             if coefList:
-
                 for coefs in coefList:
-
                     rBonds = multiplyCoef(bondR1, coefs[0])
                     for rIndex in range(rSize - 1):
                         rBonds = combine2Dicts(rBonds, multiplyCoef(curBonds[rIndex], coefs[rIndex + 1]))
-
                     pBonds = {}
                     for pIndex in range(pSize):
                         pBonds = combine2Dicts(pBonds, multiplyCoef(curBonds[pIndex + rSize - 1], coefs[pIndex + rSize]))
-
                     if compare2Dicts(rBonds, pBonds):
                         # rxn = printResultDiffParallel(reactants=curRKeys, products=curPKeys, coefs=coefs)
                         rxnList.append(printResultDiffParallel(reactants=curRKeys, products=curPKeys, coefs=coefs))
-
     return rxnList
 
 def processSame_fast_3(r1, m1, keys, config):
-
     atomR1 = defaultdict(int)
-
     for atom in m1.GetAtoms():
         atomR1[atom.GetSymbol()] += 1
         atomR1["H"] += atom.GetTotalNumHs()
-
     maxCnt = config.noTrials
 
     mols = {key: Chem.MolFromSmiles(key) for key in keys}
@@ -323,7 +226,6 @@ def processSame_fast_6(r1, m1, keys, config):
 
     bondR1 = findBonds(m1, coef=1, config=config)
 
-    # 3 - 3
     return generate_same_rxn(keys=keys, m1=m1, r1=r1, mols=mols, atomR1=atomR1, atomList=atomList,
                              bondR1=bondR1, bonds=bonds, rSize=2, pSize=3, maxCnt=maxCnt, config=config)
 
