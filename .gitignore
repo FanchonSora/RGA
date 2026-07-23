@@ -1,18 +1,46 @@
-# Compiled python modules
+# Python
 __pycache__/
 *.py[cod]
+*$py.class
+*.pyo
 
-# Executables and large binaries
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Executables
 *.exe
-*.rar
-*.zip
 
-# Logs and outputs
-*.out
-error.out
-
-# Build and IDE directories
+# PyInstaller
 build/
 dist/
+*.spec
+
+# IDE
 .idea/
-Temp files/
+.vscode/
+*.swp
+*.swo
+
+# Runtime / Output files
+*.out
+error.out
+output/*.out
+
+# Archives (large files)
+*.rar
+*.zip
+*.tar.gz
+
+# Large data files (not tracked in git)
+data/ml/
+data/species/qm9.csv
+
+# OS artifacts
+Thumbs.db
+.DS_Store
+
+# Backup files
+*.bak
+*.bak.bak

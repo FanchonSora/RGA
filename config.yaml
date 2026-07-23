@@ -1,10 +1,10 @@
 files:
-  species_file: CBSQB3_2019.10.25.txt # Molecular database
-  res_file: C:\Users\THINKPAD P16S\.gemini\antigravity-ide\scratch\RGA_repo\output\lam_CBSQB3.out #res_test_2.out
-  executor: Lam # Name of who runs the code
-  species_smiles: "C1CC2=CC=CC=C2C1" # CC1COC(O1)=O SMILES wrapped by quotes, multiple species split by space/tab
-  calc_value: 17.3 # Calculated value (kcal/mol), no quote needed, same as smiles
-  
+  species_file: data/species/CBSQB3_2019.10.25.txt  # Molecular database
+  res_file: output/lam_CBSQB3.out  # Output file path (relative to repo root)
+  executor: Lam  # Name of who runs the code
+  species_smiles: "C1CC2=CC=CC=C2C1"  # SMILES wrapped by quotes, multiple species split by space/tab
+  calc_value: 17.3  # Calculated value (kcal/mol), no quote needed, same as smiles
+
 rxn_constraints:
   no_of_cores: 6
   same_coef: true
@@ -12,7 +12,8 @@ rxn_constraints:
   complete_set: true
   stochastic: false
   no_trials: 100000
-  seed: 42 # Empty or integer value, used for reproducibility of the stochastic approach
+  seed: 42  # Empty or integer value, used for reproducibility of the stochastic approach
+
   # Atom constraints
   lone_electron: false
   electron_pair: true
@@ -23,7 +24,7 @@ rxn_constraints:
   atom_degree: false
   atom_type: C
   radical: false
-  
+
   # Bond constraints
   bond_type:
     hydro_bond: true
@@ -32,15 +33,15 @@ rxn_constraints:
     bond_with_hydro: false
     bond_degree: false
     bond_radical: false
-    bond_atom_type: C 
+    bond_atom_type: C
     ring: false
-    
+
 similarity:
   similarity_on: true
   radius: 4
   chirality: true
-  feature_method: HRCF # HRCF, ECFP, FCFP, BoB, CM, AP, TT
-  
+  feature_method: HRCF  # HRCF, ECFP, FCFP, BoB, CM, AP, TT
+
 analysis:
   analysis_on: true
   filter: true

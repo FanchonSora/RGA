@@ -1,23 +1,67 @@
-# RGA Project Usage Guide
+# RGA — Reaction Generator & Analyzer
 
 ## Overview
-This repository contains the RGA reaction generator and analyzer. The primary execution directory is `RAG_initial/RGA`.
-The main executable script is `isodesmic_multiple.py`, which reads a YAML config file (`config.yaml`), loads species data, generates isodesmic reactions, computes similarity, and performs HoF analysis.
+
+RGA generates isodesmic reactions for a target molecule, computes molecular similarity, and performs Heat-of-Formation (HoF) analysis using thermochemical species data.
+
+The main entry point is `isodesmic_multiple.py` at the repo root. It reads `config.yaml`, loads species data, generates reactions, computes similarity, and outputs results.
+
+---
+
+## Project Layout
+
+```
+RGA_repo/
+├── isodesmic_multiple.py    # ← Main CLI entry point
+├── config.yaml              # ← Configuration (edit before running)
+├── requirements.txt
+│
+├── src/
+│   ├── core/                # Reaction generation & similarity engine
+│   │   ├── rxngenerator_complete_parallel.py
+│   │   ├── rxngenerator_stochastic_parallel.py
+│   │   ├── similarity_parallel.py
+│   │   ├── balancing_module.py
+│   │   ├── bond_finder.py
+│   │   ├── rxngenconfig.py
+│   │   └── utility_module.py
+│   ├── analysis/            # Analysis, ML & dataset modules
+│   │   ├── analysis_module_new.py
+│   │   ├── dataset_generator.py
+│   │   ├── gaussian_process.py
+│   │   ├── coulomb_matrix.py
+│   │   ├── rga_ml.py
+│   │   └── rga_selective_ml.py
+│   └── tools/               # Utility & validation scripts
+│       ├── ATcT_checker_new.py
+│       ├── smiles_checking.py
+│       ├── rxn_writer.py
+│       ├── rxn_overlap_finder.py
+│       ├── check_rxns.py
+│       └── test_smiles.py
+│
+├── data/
+│   ├── species/             # Thermochemical species databases
+│   │   ├── CBSQB3_2019.10.25.txt   # ← default species file
+│   │   ├── CBS-QB3_new.csv
+│   │   ├── CBS-QB3_full.csv
+│   │   ├── AM1_full.csv
+│   │   ├── AM1.data
+│   │   └── HOF_CBSQB3_2019.10.25.csv
+│   ├── atct/
+│   │   └── ATCT_DATABASE-2018.06.14.xlsx
+│   ├── literature/
+│   │   └── literature_data.csv
+│   └── ml/                  # ML-ready datasets
+│       ├── datasets/
+│       └── similarity/
+│
+└── output/                  # Generated result files (gitignored)
+```
+
+---
 
 ## Requirements
-Install Python dependencies before running the project.
-
-Recommended packages:
-- numpy
-- pandas
-- matplotlib
-- rdkit
-- scikit-learn
-- sympy
-- PuLP
-- PyYAML
-
-If you are using a Python virtual environment:
 
 ```powershell
 python -m venv .venv
@@ -25,46 +69,44 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-> Note: `rdkit` often requires a special install method depending on your Python distribution.
+Key packages: `numpy`, `pandas`, `matplotlib`, `rdkit`, `scikit-learn`, `sympy`, `PuLP`, `PyYAML`
 
-## Project Layout
-- `RAG_initial/RGA/` - Main directory containing the application code and data.
-- `RAG_initial/RGA/isodesmic_multiple.py` - Main CLI entry point for processing multiple reactions.
-- `RAG_initial/RGA/config.yaml` - Configuration file defining input data and execution parameters.
-- `RAG_initial/RGA/CBSQB3_2019.10.25.txt` - Species database file.
-- `src/` - A cleaner, refactored version of the source code (currently retained for reference/future use).
+> **Note:** On Windows, `rdkit` via pip can fail — use `conda install -c conda-forge rdkit` if needed.
+
+---
 
 ## How to Run
 
-1. Open your terminal and change the directory to the working folder:
-```powershell
-cd RAG_initial\RGA
-```
+1. Edit `config.yaml` at the repo root:
 
-2. Open `config.yaml` in your editor and configure the necessary inputs. The script `isodesmic_multiple.py` reads these values directly so you don't have to enter them interactively. Example configuration:
 ```yaml
 files:
-  species_file: CBSQB3_2019.10.25.txt
-  res_file: ...\RGA_repo\output\'...'.out
-  executor: Lam
+  species_file: data/species/CBSQB3_2019.10.25.txt
+  res_file: output/my_result.out
+  executor: YourName
   species_smiles: "C1=CC=C2C=CC=CC2=C1"
   calc_value: 38.7
 ```
 
-3. Execute the script:
+2. Run from the repo root:
+
 ```powershell
 python isodesmic_multiple.py
 ```
 
-## Expected Output
-The script will output its progress in the terminal and write the results to the path specified by `res_file` in your `config.yaml`. The output filename will be prefixed with the target SMILES string (e.g., `C1=CC=C2C=CC=CC2=C1_lam_CBSQB3.out`).
+---
 
-The result file will contain:
-- Header block with executor and species details.
-- Constraint parameters used for generation.
-- List of reactions with similarity, HoF (Heat of Formation), and uncertainty.
-- Execution details and performance summary.
+## Expected Output
+
+Results are written to `output/` (path set in `config.yaml`). Each output file contains:
+- Header block (executor, species, parameters)
+- List of reactions with similarity score, HoF, and uncertainty
+- Execution summary and performance stats
+
+---
 
 ## Troubleshooting
-- If the script cannot find `config.yaml` or `CBSQB3_2019.10.25.txt`, make sure you have `cd` into the `RAG_initial\RGA` directory before executing the script.
-- On Windows, installing `rdkit` via `pip` can sometimes fail; if so, consider using `conda install -c conda-forge rdkit` or a pre-compiled wheel.
+
+- **`config.yaml` not found**: Run from the repo root, not a subdirectory.
+- **Import errors**: Ensure `.venv` is activated and all packages are installed.
+- **rdkit install fails on Windows**: Use `conda install -c conda-forge rdkit`.
